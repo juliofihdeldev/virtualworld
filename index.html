@@ -6,25 +6,27 @@
     <link rel="stylesheet" href="./style.css">
 
 </head>
-    <h1> Advanced Canvas</h1>
     <canvas id="myCanvas"></canvas>
     <div id="controls">
         <button onclick="save()"> Saves </button>
         <button onclick="removeAll()"> Clear canvas </button>
     </div>
 
-
     <script src="js/math/graph.js"></script>
     <script src="js/math/utils.js"></script>
     <script src="js/graphEditor.js"></script>
-        <script src="js/viewPort.js"></script>
+    <script src="js/viewPort.js"></script>
     <script src="js/primitive/point.js"></script>
-    <script src="js/primitive/segment.js"></script>
+    <script src="js/primitive/segment.js"></script>    
+    <script src="js/primitive/envelope.js"></script>
+    <script src="js/primitive/polygon.js"></script>
+
 
     <script>
         function removeAll(){
             graphEditor.dispose();
             ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+            localStorage.setItem('graph', null);
         }
 
         function save(){
@@ -50,6 +52,7 @@
         function animate(){
             viewport.reset()
             graphEditor.display();
+            new Envelope(graph.segments[0],100,20).draw(ctx);
             requestAnimationFrame(animate);
         }
     </script>

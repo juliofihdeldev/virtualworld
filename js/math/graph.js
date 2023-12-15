@@ -16,8 +16,8 @@ class Graph {
 	}
 
 	dispose() {
-		this.points = [];
-		this.segments = [];
+		this.points.length = 0;
+		this.segments.length = 0;
 	}
 
 	removePoint(point) {

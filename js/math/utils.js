@@ -27,3 +27,11 @@ function subtract(p1, p2) {
 function scale(point, factor) {
 	return new Point(point.x * factor, point.y * factor);
 }
+
+function translate(loc, angle, offset) {
+	return new Point(loc.x + Math.cos(angle) * offset, loc.y + Math.sin(angle) * offset);
+}
+
+function angle(p) {
+	return Math.atan2(p.y, p.x);
+}
