@@ -1,59 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title> Advanced Canvas</title>
-    <link rel="stylesheet" href="./style.css">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Advanced Canvas</title>
+		<link
+			rel="stylesheet"
+			href="./style.css"
+		/>
+	</head>
+	<canvas id="myCanvas"></canvas>
+	<div id="controls">
+		<button onclick="save()">Saves</button>
+		<button onclick="removeAll()">Clear canvas</button>
+	</div>
 
-</head>
-    <canvas id="myCanvas"></canvas>
-    <div id="controls">
-        <button onclick="save()"> Saves </button>
-        <button onclick="removeAll()"> Clear canvas </button>
-    </div>
+	<script src="js/math/graph.js"></script>
+	<script src="js/math/utils.js"></script>
+	<script src="js/graphEditor.js"></script>
+	<script src="js/world.js"></script>
+	<script src="js/viewPort.js"></script>
+	<script src="js/primitive/point.js"></script>
+	<script src="js/primitive/segment.js"></script>
+	<script src="js/primitive/envelope.js"></script>
+	<script src="js/primitive/polygon.js"></script>
 
-    <script src="js/math/graph.js"></script>
-    <script src="js/math/utils.js"></script>
-    <script src="js/graphEditor.js"></script>
-    <script src="js/viewPort.js"></script>
-    <script src="js/primitive/point.js"></script>
-    <script src="js/primitive/segment.js"></script>    
-    <script src="js/primitive/envelope.js"></script>
-    <script src="js/primitive/polygon.js"></script>
+	<script>
+		function removeAll() {
+			graphEditor.dispose();
+			ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+			localStorage.setItem("graph", null);
+		}
 
+		function save() {
+			const json = JSON.stringify(graph);
+			console.log(json);
+			localStorage.setItem("graph", json);
+		}
 
-    <script>
-        function removeAll(){
-            graphEditor.dispose();
-            ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-            localStorage.setItem('graph', null);
-        }
+		myCanvas.width = 600;
+		myCanvas.height = 600;
+		const ctx = myCanvas.getContext("2d");
 
-        function save(){
-            const json = JSON.stringify(graph);
-            console.log(json);
-            localStorage.setItem('graph', json);
-        }
+		const graphStr = localStorage.getItem("graph");
+		const graphInfo = graphStr ? JSON.parse(graphStr) : null;
 
-        myCanvas.width = 600;
-        myCanvas.height = 600;
-        const ctx = myCanvas.getContext('2d');
-        
-        const graphStr = localStorage.getItem('graph');
-        const graphInfo = graphStr ? JSON.parse(graphStr) : null;
+		const graph = graphInfo ? Graph.load(graphInfo) : new Graph();
 
-        const graph =  graphInfo ?  Graph.load(graphInfo) : new Graph();
+		const world = new World(graph);
 
-        const viewport = new Viewport(myCanvas);
-        const graphEditor = new GraphEditor(viewport,graph);
+		const viewport = new Viewport(myCanvas);
+		const graphEditor = new GraphEditor(viewport, graph);
 
-        animate()
+		animate();
 
-        function animate(){
-            viewport.reset()
-            graphEditor.display();
-            new Envelope(graph.segments[0],100,20).draw(ctx);
-            requestAnimationFrame(animate);
-        }
-    </script>
+		function animate() {
+			viewport.reset();
+			world.generate();
+			world.draw(ctx);
+            ctx.globalAlpha = 0.3;
+			graphEditor.display();
+			requestAnimationFrame(animate);
+		}
+	</script>
 </html>
